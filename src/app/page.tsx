@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 
-//
+//Supabase クライアントを初期化
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -17,12 +17,18 @@ type Dummy = {
   inserted_at: string
 }
 
+// ページコンポーネントをデフォルトエクスポート
 export default function Page() {
+  // Supabase から取得したデータ（Dummy 型の配列）を保持する state
   const [items, setItems] = useState<Dummy[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await supabase.from('dummy_table').select('*').order('inserted_at', { ascending: false })
+      // Supabase の "dummy_table" からデータを取得（inserted_at の降順で並び替え）
+      const { data, error } = await supabase
+        .from('dummy_table')
+        .select('*')
+        .order('inserted_at', { ascending: false })
 
       if (error) {
         console.error('データ取得エラー:', error)
@@ -34,6 +40,7 @@ export default function Page() {
     fetchData()
   }, [])
 
+  // ページの描画部分
   return (
     <main>
       <h1 className="text-xl font-bold mb-4">Dummy Table 一覧</h1>
